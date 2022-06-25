@@ -13,8 +13,10 @@
         android:theme="@style/Theme.Mediapproved"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".MainDashboard"
-            android:exported="false" />
+            android:name=".final_dashboard"
+            android:exported="false"
+            android:label="@string/title_activity_final_dashboard"
+            android:theme="@style/Theme.Mediapproved.NoActionBar" />
         <activity
             android:name=".SignUp"
             android:exported="false" />

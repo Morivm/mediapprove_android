@@ -28,8 +28,8 @@ public class BackgroundTask extends AsyncTask<String, String, String> {
         String lastname     = strings[1];
         String firstname    = strings[2];
         String middlename   = strings[3];
-
-        String regUrl   = "http://192.168.1.4/hospital/android/register.php";
+        String regUrl   = "https://mediapprove.net/android/register.php";
+//        String regUrl   = "http://localhost/default_template/android/register.php";
 
         if(type.equals("reg")) {
             try {

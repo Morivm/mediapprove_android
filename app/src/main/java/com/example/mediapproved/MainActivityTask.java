@@ -1,9 +1,14 @@
 package com.example.mediapproved;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -32,13 +37,19 @@ public class MainActivityTask extends AsyncTask<String, String, String> {
         String username     = strings[1];
         String password     = strings[2];
 
-        String regUrl   = "http://192.168.1.4/hospital/android/sign_in.php";
+//        String regUrl   = "http://54.251.75.129/fortest/android/sign_in";
+        String regUrl   = "https://mediapprove.net/android/sign_in.php";
+
+
 
         if(type.equals("login")) {
             try {
                 URL url = new URL(regUrl);
 
                 try {
+
+
+
                     HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
                     httpURLConnection.setRequestMethod("POST");
                     httpURLConnection.setDoOutput(true);
@@ -62,6 +73,7 @@ public class MainActivityTask extends AsyncTask<String, String, String> {
                         stringBuilder.append(line).append("\n");
 
                     }
+
                     result = stringBuilder.toString();
                     bufferedReader.close();
                     inputStream.close();
@@ -76,26 +88,53 @@ public class MainActivityTask extends AsyncTask<String, String, String> {
                 e.printStackTrace();
             }
         }
+
         return null;
     }
 
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
+
     }
 
     @Override
     protected void onPostExecute(String s) {
+        try {
+            JSONObject json_data = new JSONObject(s);
+            String response_type    = (json_data.getString("resp_type"));
+            String response_message = (json_data.getString("resp_mess"));
+            String response_res     = (json_data.getString("resp_resid"));
 
-        if(s.contains("Success")) {
-            Toast.makeText(context, "Redirecting...",Toast.LENGTH_SHORT).show();
-//            super.onPostExecute(s);
-            Intent i = new Intent(context, MainDashboard.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(i);
-        }else{
-            Toast.makeText(context, s, Toast.LENGTH_LONG).show();
+
+            if(response_type.equals("0")) {
+                Toast.makeText(context, response_message, Toast.LENGTH_SHORT).show();
+            }else{
+//                Toast.makeText(context, "Welcome Back" + response_message,Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(context, final_dashboard.class);
+
+                i.putExtra("KEY_LOGIN_NAME", response_message);
+                i.putExtra("KEY_LOGIN_RESID", response_res);
+
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                context.startActivity(i);
+
+            }
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
+        // if its and array of data then convert it to json array
+
+//        if(s.contains("Success")) {
+//            Toast.makeText(context, "Redirecting...",Toast.LENGTH_SHORT).show();
+//
+
+//        }else{
+//            Toast.makeText(context, s, Toast.LENGTH_LONG).show();
+//        }
 
     }
 
